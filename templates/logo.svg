@@ -1,0 +1,33 @@
+<svg width="500" height="500" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
+  <g transform="translate(0, 0)">
+    
+    <polygon 
+      points="200,40 338.56,120 338.56,280 200,360 61.44,280 61.44,120" 
+      fill="none" 
+      stroke="#0f2a44" 
+      stroke-width="22" 
+      stroke-linejoin="miter" 
+    />
+
+    <path 
+      d="M 265 165 
+         A 65 65 0 0 0 200 115 
+         L 135 115 
+         L 135 285 
+         L 200 285 
+         A 65 65 0 0 0 265 235" 
+      fill="none" 
+      stroke="#0f2a44" 
+      stroke-width="28" 
+      stroke-linejoin="miter" 
+      stroke-linecap="butt" 
+    />
+
+    <circle cx="135" cy="200" r="28" fill="#0f2a44" />
+    
+    <circle cx="265" cy="165" r="28" fill="#0f2a44" />
+    
+    <circle cx="265" cy="235" r="28" fill="#0f2a44" />
+
+  </g>
+</svg>

@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>DARVS Admin Access</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+
+<body>
+
+<canvas id="neural-grid"></canvas>
+
+<div id="admin-login-container">
+
+    <header id="admin-header">
+        <div class="admin-header-inner">
+            <div class="admin-title">
+                DARVS <span class="neon-text">Secure Admin Access</span>
+            </div>
+        </div>
+    </header>
+
+    <div class="login-wrapper">
+
+        <div class="glass-panel login-panel fade-in {% if error %}shake{% endif %}">
+
+            <div class="lock-icon">
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none">
+                    <path d="M6 10V8a6 6 0 1 1 12 0v2"
+                          stroke="currentColor"
+                          stroke-width="2"/>
+                    <rect x="4" y="10" width="16" height="10" rx="2"
+                          stroke="currentColor"
+                          stroke-width="2"/>
+                </svg>
+            </div>
+
+            <div class="login-title">
+                Administrator Authentication
+            </div>
+
+            <div class="login-subtitle">
+                Restricted Access • Biometric Control System
+            </div>
+
+            {% if error %}
+            <div class="error-message">
+                Access Denied
+            </div>
+            {% endif %}
+
+            <form method="POST" class="login-form">
+
+                <div class="input-group">
+                    <input type="password"
+                           name="password"
+                           placeholder="Enter Administrator Password"
+                           required>
+                </div>
+
+                <button type="submit" class="btn primary-btn full-width">
+                    Authenticate
+                </button>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+<div class="system-version">
+    DARVS v2.0 • Secure Build
+</div>
+
+<script>
+const canvas = document.getElementById("neural-grid");
+const ctx = canvas.getContext("2d");
+
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+let particles = [];
+const PARTICLE_COUNT = 70;
+const MAX_DISTANCE = 120;
+
+for (let i = 0; i < PARTICLE_COUNT; i++) {
+    particles.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        dx: (Math.random() - 0.5) * 0.6,
+        dy: (Math.random() - 0.5) * 0.6
+    });
+}
+
+function drawConnections() {
+    for (let i = 0; i < particles.length; i++) {
+        for (let j = i + 1; j < particles.length; j++) {
+            const dx = particles[i].x - particles[j].x;
+            const dy = particles[i].y - particles[j].y;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+
+            if (distance < MAX_DISTANCE) {
+                const opacity = 1 - distance / MAX_DISTANCE;
+                ctx.strokeStyle = `rgba(0,255,210,${opacity * 0.6})`;
+                ctx.lineWidth = 1;
+                ctx.beginPath();
+                ctx.moveTo(particles[i].x, particles[i].y);
+                ctx.lineTo(particles[j].x, particles[j].y);
+                ctx.stroke();
+            }
+        }
+    }
+}
+
+function animate() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    particles.forEach(p => {
+        p.x += p.dx;
+        p.y += p.dy;
+
+        if (p.x < 0 || p.x > canvas.width) p.dx *= -1;
+        if (p.y < 0 || p.y > canvas.height) p.dy *= -1;
+
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, 2, 0, Math.PI * 2);
+        ctx.fillStyle = "rgba(0,255,210,0.8)";
+        ctx.fill();
+    });
+
+    drawConnections();
+    requestAnimationFrame(animate);
+}
+
+animate();
+
+window.addEventListener("resize", () => {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+});
+</script>
+
+</body>
+</html>

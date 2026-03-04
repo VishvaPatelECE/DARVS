@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>DARVS Security Terminal</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+
+<body data-state="LIVENESS">
+
+<!-- ===== TERMINAL BACKGROUND ===== -->
+<div class="terminal-grid"></div>
+<div class="vignette-overlay"></div>
+
+<!-- ===== BOOT SCREEN ===== -->
+<div id="boot-screen">
+    <div class="boot-content">
+        <h2>DARVS INITIALIZING</h2>
+        <div class="boot-bar">
+            <div class="boot-progress"></div>
+        </div>
+        <p>Deepfake Authentication & Reality Verification System</p>
+    </div>
+</div>
+
+<div id="dashboard-container">
+
+<header>
+    <h1>DARVS <span class="neon-text">Security Terminal</span></h1>
+    <a href="/admin" class="admin-link">Admin</a>
+    <div id="banner" class="banner">Awaiting authentication...</div>
+</header>
+
+<main>
+
+<section id="main-feed-panel" class="glass-panel">
+    <div class="panel-title">
+        <span class="neon-accent">Live Camera Feed</span>
+    </div>
+
+    <div class="feed-container">
+        <div class="scan-overlay"></div>
+
+        <div class="face-hud">
+            <div class="corner tl"></div>
+            <div class="corner tr"></div>
+            <div class="corner bl"></div>
+            <div class="corner br"></div>
+        </div>
+
+        <div id="lock-overlay" class="lock-overlay">
+            LOCK ACQUIRED
+        </div>
+
+        <img id="live-feed"
+             src="{{ url_for('video_feed') }}"
+             alt="Live feed" />
+    </div>
+
+    <div class="instruction-panel">
+        <span id="instruction-text">Initializing...</span>
+    </div>
+</section>
+
+<section id="side-panels">
+
+    <div id="status-panel" class="glass-panel">
+        <div class="panel-title">
+            <span class="neon-accent">Real-time Status</span>
+        </div>
+        <ul>
+            <li>
+                <span>Liveness:</span>
+                <span class="status-indicator" id="liveness-status"></span>
+            </li>
+            <li>
+                <span>Recognition:</span>
+                <span class="status-indicator" id="recognition-status"></span>
+            </li>
+        </ul>
+    </div>
+
+    <div id="confidence-panel" class="glass-panel">
+        <div class="panel-title">
+            <span class="neon-accent">Confidence</span>
+        </div>
+
+        <div id="confidence-meter">
+            <svg viewBox="0 0 120 120">
+                <circle class="bg" cx="60" cy="60" r="54"/>
+                <circle class="fg" cx="60" cy="60" r="54"/>
+            </svg>
+            <div class="confidence-value" id="confidence-value">0%</div>
+        </div>
+    </div>
+
+    <div id="metrics-panel" class="glass-panel">
+        <div class="panel-title">
+            <span class="neon-accent">Advanced Metrics</span>
+        </div>
+
+        <div class="success-ring">
+            <svg viewBox="0 0 120 120">
+                <circle class="ring-bg" cx="60" cy="60" r="50"/>
+                <circle class="ring-fg" id="success-ring" cx="60" cy="60" r="50"/>
+            </svg>
+            <div id="success-rate-text">0%</div>
+        </div>
+
+        <div class="mini-bars" id="mini-bars"></div>
+    </div>
+
+</section>
+
+<section id="activity-panel" class="glass-panel">
+    <div class="panel-title">
+        <span class="neon-accent">Recent Activity</span>
+    </div>
+    <table id="activity-log">
+        <thead>
+        <tr>
+            <th>Timestamp</th>
+            <th>User</th>
+            <th>Liveness</th>
+            <th>Confidence</th>
+            <th>Result</th>
+        </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+</section>
+
+</main>
+</div>
+
+<script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>

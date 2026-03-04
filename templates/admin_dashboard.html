@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>DARVS Admin Control</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+
+<body>
+
+<div id="admin-container">
+
+    <header id="admin-header">
+        <div class="admin-header-inner">
+            <div class="admin-title">
+                DARVS <span class="neon-text">Admin Control</span>
+            </div>
+
+            <div class="admin-actions">
+                <a href="/" class="btn ghost-btn">Main Dashboard</a>
+                <a href="/admin/logout" class="btn danger-btn">Logout</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- STATS -->
+    <section class="stats-grid">
+
+        <div class="stat-card">
+            <div class="stat-label">Total Attempts</div>
+            <div class="stat-value">{{ stats.total_attempts }}</div>
+        </div>
+
+        <div class="stat-card success">
+            <div class="stat-label">Success Count</div>
+            <div class="stat-value">{{ stats.success_count }}</div>
+        </div>
+
+        <div class="stat-card danger">
+            <div class="stat-label">Liveness Fails</div>
+            <div class="stat-value">{{ stats.liveness_fail_count }}</div>
+        </div>
+
+        <div class="stat-card danger">
+            <div class="stat-label">Recognition Fails</div>
+            <div class="stat-value">{{ stats.recognition_fail_count }}</div>
+        </div>
+
+        <div class="stat-card circular">
+            <div class="stat-label">Success Rate</div>
+
+            <div class="circle-wrapper">
+                <svg viewBox="0 0 120 120" class="progress-ring">
+                    <circle class="ring-bg" cx="60" cy="60" r="54"></circle>
+                    <circle class="ring-progress"
+                            cx="60" cy="60" r="54"
+                            data-rate="{{ stats.success_rate }}">
+                    </circle>
+                </svg>
+                <div class="circle-text">{{ stats.success_rate }}%</div>
+            </div>
+        </div>
+
+    </section>
+
+    <!-- MAIN GRID -->
+    <section class="admin-main-grid">
+
+        <div class="glass-panel">
+            <div class="panel-title">Registered Users</div>
+
+            <table class="user-table">
+                <thead>
+                    <tr>
+                        <th>User</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user in users %}
+                    <tr>
+                        <td>{{ user }}</td>
+                        <td>
+                            <button class="btn danger-btn delete-btn"
+                                    data-user="{{ user }}">
+                                Delete
+                            </button>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div class="glass-panel">
+            <div class="panel-title">System Configuration</div>
+
+            <form method="POST" action="/admin/update-threshold" class="config-form">
+                <label>Recognition Threshold</label>
+                <input type="number" name="threshold" value="{{ config.threshold }}">
+                <button type="submit" class="btn primary-btn">Update</button>
+            </form>
+
+            <form method="POST" action="/admin/update-liveness" class="config-form">
+                <label>Liveness Shift Ratio</label>
+                <input type="text" name="shift_ratio" value="{{ config.shift_ratio }}">
+                <button type="submit" class="btn primary-btn">Update</button>
+            </form>
+
+            <div class="toggle-section">
+                <span>System Enabled</span>
+                <a href="/admin/toggle-system" class="btn ghost-btn">
+                    {{ "Disable" if system_enabled else "Enable" }}
+                </a>
+            </div>
+        </div>
+
+    </section>
+
+    <section class="glass-panel utilities-panel">
+        <div class="panel-title">System Utilities</div>
+
+        <div class="utility-actions">
+            <a href="/admin/reset-stats" class="btn danger-btn">Reset Stats</a>
+            <a href="/admin/download-logs" class="btn primary-btn">Download Logs</a>
+        </div>
+    </section>
+
+</div>
+
+<!-- DELETE MODAL -->
+
+<div id="delete-modal" class="modal">
+    <div class="modal-content">
+        <h3>Confirm Deletion</h3>
+        <p id="modal-user-text"></p>
+        <div class="modal-actions">
+            <button id="confirm-delete" class="btn danger-btn">Delete</button>
+            <button id="cancel-delete" class="btn ghost-btn">Cancel</button>
+        </div>
+    </div>
+</div>
+
+<script>
+const ring = document.querySelector(".ring-progress");
+if (ring) {
+    const radius = 54;
+    const circumference = 2 * Math.PI * radius;
+    const rate = parseFloat(ring.dataset.rate);
+    ring.style.strokeDasharray = circumference;
+    ring.style.strokeDashoffset = circumference - (rate / 100) * circumference;
+}
+
+const modal = document.getElementById("delete-modal");
+const deleteButtons = document.querySelectorAll(".delete-btn");
+const modalText = document.getElementById("modal-user-text");
+const confirmBtn = document.getElementById("confirm-delete");
+const cancelBtn = document.getElementById("cancel-delete");
+
+let selectedUser = null;
+
+deleteButtons.forEach(btn => {
+    btn.addEventListener("click", () => {
+        selectedUser = btn.dataset.user;
+        modalText.textContent = "Delete user: " + selectedUser + "?";
+        modal.classList.add("show");
+    });
+});
+
+cancelBtn.onclick = () => modal.classList.remove("show");
+
+confirmBtn.onclick = () => {
+    if (selectedUser) {
+        window.location.href = "/admin/delete-user/" + selectedUser;
+    }
+};
+</script>
+
+</body>
+</html>

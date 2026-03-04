@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="card">
+    <h2>Registered Users</h2>
+
+    <ul class="user-list">
+        {% for user in users %}
+            <li>
+                {{ user }}
+                <a href="/delete/{{ user }}" class="delete-btn">Delete</a>
+            </li>
+        {% endfor %}
+    </ul>
+
+    <div class="register-box">
+        <form onsubmit="window.location.href='/register/' + this.name.value; return false;">
+            <input type="text" name="name" placeholder="Enter name" required>
+            <button type="submit">Register</button>
+        </form>
+    </div>
+
+</div>
+
+{% endblock %}

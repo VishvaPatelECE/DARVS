@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>DARVS Security Terminal</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <script defer src="{{ url_for('static', filename='js/script.js') }}"></script>
+</head>
+
+<body class="loading">
+
+<!-- ================= LOADER ================= -->
+<div id="loader-screen">
+    <div class="loader-content">
+        <div class="loader-logo">DARVS</div>
+        <div class="loader-subtitle">Defense-grade biometric authentication</div>
+
+        <div class="loader-progress-wrapper">
+            <div class="loader-progress"></div>
+        </div>
+
+        <div class="loader-fact" id="loader-fact"></div>
+    </div>
+</div>
+
+<!-- ================= FIXED HEADER ================= -->
+<header id="main-header">
+
+<div class="main-header-inner">
+
+<div></div>
+
+<div class="logo-group">
+<img id="darvs-icon" src="/static/images/darvs.svg">
+<div>
+<div id="darvs-logo">DARVS</div>
+<div class="subtitle">Deepfake Authentication & Reality Verification</div>
+</div>
+</div>
+
+<div class="connection-info">
+<a href="/admin">ADMIN</a>
+<span id="connection-type">Checking...</span>
+</div>
+
+</div>
+
+</header><!-- ================= MAIN CONTENT ================= -->
+<main>
+
+    <!-- LEFT: CAMERA -->
+    <section id="main-feed-panel" class="glass-panel">
+
+        <div class="panel-title neon-accent">
+            Live Camera Feed
+        </div>
+
+        <div class="feed-container">
+
+            <img id="camera-feed" />
+
+            <div class="camera-controls">
+                <button id="start-btn" class="ghost-btn">START TEST</button>
+                <button id="stop-btn" class="ghost-btn">STOP TEST</button>
+            </div>
+
+        </div>
+
+    </section>
+
+    <!-- RIGHT: SIDE PANELS -->
+    <div id="side-panels">
+
+        <section id="status-panel" class="glass-panel">
+            <div class="panel-title neon-accent">System Status</div>
+            <div id="system-state">Idle</div>
+        </section>
+
+        <section id="confidence-panel" class="glass-panel">
+            <div class="panel-title neon-accent">Confidence</div>
+
+            <div id="confidence-meter">
+                <svg width="150" height="150">
+                    <circle class="bg" cx="75" cy="75" r="65"></circle>
+                    <circle class="fg" id="confidence-circle" cx="75" cy="75" r="65"></circle>
+                </svg>
+                <div class="confidence-value" id="confidence-display">0%</div>
+            </div>
+
+        </section>
+
+    </div>
+
+    <!-- FULL WIDTH: ACTIVITY -->
+    <section id="activity-panel" class="glass-panel" style="grid-column: 1 / span 2;">
+
+        <div class="panel-title neon-accent">Recent Activity</div>
+
+        <table id="activity-log">
+            <thead>
+                <tr>
+                    <th>Time</th>
+                    <th>User</th>
+                    <th>Result</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+
+    </section>
+
+</main>
+
+<!-- ================= BACKGROUND ================= -->
+<canvas id="neural-bg"></canvas>
+
+</body>
+</html>
