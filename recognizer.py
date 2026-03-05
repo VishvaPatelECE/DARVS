@@ -10,10 +10,13 @@ ENCODINGS_FILE = "encodings.pkl"
 
 class FaceRecognizer:
     def __init__(self):
-        try:
-            download_file("encodings.pkl", "encodings.pkl")
-        except:
-            pass
+
+        # Download only if file doesn't exist
+        if not os.path.exists("encodings.pkl"):
+            try:
+                download_file("encodings.pkl", "encodings.pkl")
+            except:
+                pass
 
         self.detector = MTCNN()
         self.embedder = FaceNet()

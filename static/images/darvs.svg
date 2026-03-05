@@ -1,0 +1,59 @@
+<svg viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
+
+<defs>
+
+<path id="dPath"
+d="
+M150 115
+L220 115
+A65 65 0 0 1 285 165
+A65 65 0 0 1 285 235
+L220 285
+L150 285
+L150 115
+"/>
+
+</defs>
+
+<g>
+
+<polygon 
+points="200,30 350,120 350,280 200,370 50,280 50,120"
+fill="none"
+stroke="#0fffd2"
+stroke-width="18"
+/>
+
+<path
+d="M285 165
+A65 65 0 0 0 220 115
+L150 115
+L150 285
+L220 285
+A65 65 0 0 0 285 235"
+fill="none"
+stroke="#0fffd2"
+stroke-width="20"
+/>
+
+<circle fill="#0fffd2" r="28">
+<animateMotion dur="4s" repeatCount="indefinite">
+<mpath href="#dPath"/>
+</animateMotion>
+</circle>
+
+<circle fill="#0fffd2" r="28">
+<animateMotion dur="4s" begin="1.3s" repeatCount="indefinite">
+<mpath href="#dPath"/>
+</animateMotion>
+</circle>
+
+<circle fill="#0fffd2" r="28">
+<animateMotion dur="4s" begin="2.6s" repeatCount="indefinite">
+<mpath href="#dPath"/>
+</animateMotion>
+</circle>
+
+</g>
+
+</svg>

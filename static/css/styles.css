@@ -134,12 +134,12 @@ gap:14px;
 }
 
 #darvs-icon{
-width:36px;
-height:36px;
+width:60px;
+height:60px;
 object-fit:contain;
+margin-right: 14px;
 
-filter:
-drop-shadow(0 0 8px rgba(0,255,210,.6));
+filter: drop-shadow(0 0 12px rgba(0,255,210,0.7));
 
 transition:all .35s ease;
 }
@@ -958,3 +958,4 @@ main {
     flex-direction:column;
     gap:24px;   /* THIS FIXES PANELS TOUCHING */
 }
+

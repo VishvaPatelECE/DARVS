@@ -1,63 +1,98 @@
 import gspread
 from google.oauth2.service_account import Credentials
 
+
 SHEET_ID = "1D1Bb2aiBGanKHCBS8lbFZzro1_uPmc41nFAPgBChLS0"
 
 SCOPES = [
     "https://www.googleapis.com/auth/spreadsheets"
 ]
 
-creds = Credentials.from_service_account_file(
-    "gcp_credentials.json",
-    scopes=SCOPES
-)
 
-client = gspread.authorize(creds)
-spreadsheet = client.open_by_key(SHEET_ID)
-
-# Main log sheet
-main_sheet = spreadsheet.sheet1
-
-# Statistics tab (must exist)
-stats_sheet = spreadsheet.worksheet("Statistics")
+main_sheet = None
+stats_sheet = None
 
 
-# -------------------------------
-# Append Log + Color + Stats
-# -------------------------------
+# -------------------------------------------------
+# INITIALIZE GOOGLE SHEETS (SAFE)
+# -------------------------------------------------
+
+try:
+
+    creds = Credentials.from_service_account_file(
+        "gcp_credentials.json",
+        scopes=SCOPES
+    )
+
+    client = gspread.authorize(creds)
+
+    spreadsheet = client.open_by_key(SHEET_ID)
+
+    main_sheet = spreadsheet.sheet1
+
+    stats_sheet = spreadsheet.worksheet("Statistics")
+
+    print("Google Sheets logging enabled")
+
+except Exception as e:
+
+    print("Google Sheets unavailable. Using local logging only.")
+    print(e)
+
+
+# -------------------------------------------------
+# APPEND LOG
+# -------------------------------------------------
 
 def append_to_sheet(row):
 
-    main_sheet.append_row(row)
-
-    last_row = len(main_sheet.get_all_values())
-
-    status = row[3]
-
-    if status == "SUCCESS":
-        color = {"red": 0.8, "green": 1.0, "blue": 0.8}
-    elif status == "FAILED":
-        color = {"red": 1.0, "green": 0.8, "blue": 0.8}
-    elif status == "LIVENESS_FAILED":
-        color = {"red": 1.0, "green": 0.9, "blue": 0.6}
-    else:
-        color = None
-
-    if color:
-        main_sheet.format(
-            f"A{last_row}:F{last_row}",
-            {"backgroundColor": color}
-        )
-
-    update_statistics(row)
-
-
-# -------------------------------
-# Statistics Logic
-# -------------------------------
-def update_statistics(row):
+    if main_sheet is None:
+        return
 
     try:
+
+        main_sheet.append_row(row)
+
+        last_row = len(main_sheet.get_all_values())
+
+        status = row[3]
+
+        if status == "SUCCESS":
+            color = {"red": 0.8, "green": 1.0, "blue": 0.8}
+
+        elif status == "FAILED":
+            color = {"red": 1.0, "green": 0.8, "blue": 0.8}
+
+        elif status == "LIVENESS_FAILED":
+            color = {"red": 1.0, "green": 0.9, "blue": 0.6}
+
+        else:
+            color = None
+
+        if color:
+            main_sheet.format(
+                f"A{last_row}:F{last_row}",
+                {"backgroundColor": color}
+            )
+
+        update_statistics(row)
+
+    except Exception as e:
+
+        print("Sheet logging failed:", e)
+
+
+# -------------------------------------------------
+# UPDATE STATISTICS
+# -------------------------------------------------
+
+def update_statistics(row):
+
+    if stats_sheet is None:
+        return
+
+    try:
+
         status = row[3]
         liveness = row[4]
 
@@ -71,23 +106,29 @@ def update_statistics(row):
             ["Liveness Failed", "0"]
         ]
 
-        # If structure missing or corrupted → reset
+        # If structure missing or corrupted → rebuild
         if len(stats) < 5 or stats[0][0] != "Metric":
+
             stats_sheet.clear()
+
             for r in required_structure:
                 stats_sheet.append_row(r)
+
             stats = stats_sheet.get_all_values()
 
-        # Re-fetch after possible rebuild
-        stats = stats_sheet.get_all_values()
+        # rebuild metrics dictionary
 
         metrics = {}
+
         for i in range(1, len(stats)):
             metrics[stats[i][0]] = i + 1
 
         def increment(metric_name):
+
             row_index = metrics[metric_name]
+
             current = int(stats[row_index - 1][1])
+
             stats_sheet.update_cell(row_index, 2, current + 1)
 
         increment("Total Attempts")
@@ -102,4 +143,5 @@ def update_statistics(row):
             increment("Liveness Failed")
 
     except Exception as e:
+
         print("Statistics update error:", e)
